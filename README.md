@@ -22,14 +22,97 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Backend API Documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Overview
 
+This backend application is structured with a modular organization in mind, using [NestJS](https://nestjs.com/) as the primary framework and [Prisma](https://www.prisma.io/) as the ORM for database interactions. The application includes several key modules that manage distinct parts of the application (e.g., posts, comments, user management). Each module is designed for scalability, making it easy to add new features.
+
+## Project Structure
+
+### Root Structure
+
+- **`prisma`**: Contains Prisma schema and migration files.
+  - **`schema.prisma`**: Defines the database schema for models like posts, users, and comments. This schema is used by Prisma to generate TypeScript types and SQL migrations.
+  
+- **`src`**: Main source folder for the application.
+  - **`decorator`**: Contains custom decorators (e.g., `@IsPostOwner`) to add additional metadata or validation to route handlers.
+  - **`guard`**: Houses authorization guards like `PostOwnershipGuard`, which ensures that users can only modify their own posts.
+  - **`modules`**: Contains core modules for the application. Each module has its own service, controller, and any additional files.
+    - **`comment`**: Manages comment-related business logic.
+    - **`post`**: Manages post-related business logic.
+    - **`prisma`**: Custom Prisma service that extends `PrismaClient`, responsible for managing database connections.
+    - **`user`**: Manages user-related business logic.
+  - **`app.controller.ts`**: Root controller for handling initial requests and routing.
+  - **`app.module.ts`**: Root module that imports other modules and sets up dependency injection.
+  - **`app.service.ts`**: Contains core services for the application (may be unused or minimal in modular apps).
+  - **`main.ts`**: Entry point for the application. Configures and starts the NestJS server.
+
+- **`test`**: Contains end-to-end (e2e) tests for validating the overall behavior of the API.
+  - **`app.e2e-spec.ts`**: Entry point for e2e tests.
+  - **`jest-e2e.json`**: Jest configuration specific to e2e tests.
+
+### Key Files and Directories
+
+- **Prisma Service (`prisma.service.ts`)**  
+  A custom Prisma service, extending `PrismaClient`, handles database connections and allows dependency injection of Prisma throughout the application.
+
+- **Modules**  
+  Each feature has its own module, with service and controller files:
+  - **Comment Module**: Handles all comment-related operations.
+  - **Post Module**: Manages post CRUD operations and includes methods for filtering, counting comments, and more.
+  - **User Module**: Manages user-related functionality, including checking for existing users.
+
+## API Routes
+
+The backend exposes the following routes:
+
+- **POST** `/post`: Creates a new post.
+- **GET** `/post`: Retrieves all posts with optional filtering.
+- **GET** `/post/:id`: Retrieves a specific post by ID.
+- **PATCH** `/post/:id`: Updates a post (protected by `PostOwnershipGuard`).
+- **DELETE** `/post/:id`: Deletes a post (protected by `PostOwnershipGuard`).
+- **POST** `/post/:id/comment`: Creates a comment on a post.
+- **GET** `/post/:id/comment`: Retrieves all comments for a specific post.
+
+## Unit Testing
+
+The project uses [Jest](https://jestjs.io/) for unit testing:
+
+- Each module has dedicated unit tests, especially for services.
+- **Mocking Prisma**: Prisma's client methods are mocked in unit tests to ensure isolated and fast tests without needing a real database connection.
+
+
+## Environment Configuration
+
+- **.env**: Store environment variables for database connections, API keys, etc. Make sure to set up a `.env` file with values for your environment before running the application.
+
+## Example `.env` file
+
+```dotenv
+PORT=3000
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5433
+POSTGRES_DB=postgres
+POSTGRES_SCHEMA=public
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=${POSTGRES_SCHEMA}"
+```
 ## Project setup
 
 ```bash
 $ pnpm install
+```
+
+## Run Migration
+```bash
+$ npx prisma migrate dev
+```
+
+## Generate Prisma Client (after schema changes)
+```bash
+$ npx prisma generate
 ```
 
 ## Compile and run the project
@@ -51,49 +134,6 @@ $ pnpm run start:prod
 # unit tests
 $ pnpm run test
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
 
-## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
