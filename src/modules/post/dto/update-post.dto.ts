@@ -1,22 +1,18 @@
 import { Community } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePostDto {
-  @IsNumber()
-  @IsNotEmpty()
-  readonly id: string;
+  @IsString()
+  @IsOptional()
+  readonly title?: string;
 
   @IsString()
-  @IsNotEmpty()
-  readonly title: string;
-
-  @IsString()
-  @IsNotEmpty()
-  readonly description: string;
+  @IsOptional()
+  readonly description?: string;
 
   @IsEnum(Community)
-  @IsNotEmpty()
-  readonly community: Community;
+  @IsOptional()
+  readonly community?: Community;
 
   @IsString()
   @IsNotEmpty()

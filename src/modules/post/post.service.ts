@@ -77,8 +77,12 @@ export class PostService {
   public async updatePostById(id: string, updatePostDto: UpdatePostDto) {
     try {
       const updatedPost = await this.prisma.posts.update({
-        where: { id },
-        data: updatePostDto,
+        where: { id, authorId: updatePostDto.authorId },
+        data: {
+          title: updatePostDto.title,
+          description: updatePostDto.description,
+          community: updatePostDto.community,
+        },
       });
       return updatedPost;
     } catch (error) {

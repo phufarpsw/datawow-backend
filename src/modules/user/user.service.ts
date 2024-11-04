@@ -18,7 +18,7 @@ export class UserService {
       if (!existingUser) {
         throw new NotFoundException('User Not Found');
       }
-      return existingUser;
+      return true;
     } catch (error) {
       throw error;
     }
