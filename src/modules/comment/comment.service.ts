@@ -32,6 +32,9 @@ export class CommentService {
         include: {
           user: true,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
       return comments;
     } catch (error) {
