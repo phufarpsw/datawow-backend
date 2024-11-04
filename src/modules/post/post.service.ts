@@ -64,6 +64,9 @@ export class PostService {
     try {
       const post = await this.prisma.posts.findUnique({
         where: { id },
+        include: {
+          user: true,
+        },
       });
       return post;
     } catch (error) {
