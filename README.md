@@ -99,11 +99,18 @@ POSTGRES_DB=postgres
 POSTGRES_SCHEMA=public
 DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=${POSTGRES_SCHEMA}"
 ```
+## Database Setup With Docker Compose
+Running PostgreSQL with Docker Compose
+```bash
+$ docker-compose up -d
+```
+
 ## Project setup
 
 ```bash
 $ pnpm install
 ```
+
 
 ## Run Migration
 ```bash
