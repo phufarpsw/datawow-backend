@@ -95,19 +95,24 @@ export class PostService {
   }
 
   public async deletePostById(id: string) {
-    try {
-      const post = await this.prisma.posts.findUnique({
-        where: { id },
+    return this.prisma
+      .$transaction(async (prisma) => {
+        await prisma.comments.deleteMany({
+          where: { postId: id },
+        });
+        await prisma.posts.delete({
+          where: { id },
+        });
+        return true;
+      })
+      .catch((error) => {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2025'
+        ) {
+          throw new NotFoundException(`Post with ID ${id} not found`);
+        }
+        throw error;
       });
-      if (!post) {
-        throw new NotFoundException(`Post with ID ${id} not found`);
-      }
-      await this.prisma.posts.delete({
-        where: { id: post.id },
-      });
-      return true;
-    } catch (error) {
-      throw error;
-    }
   }
 }
