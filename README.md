@@ -90,7 +90,7 @@ The project uses [Jest](https://jestjs.io/) for unit testing:
 ## Example `.env` file
 
 ```dotenv
-PORT=3000
+PORT=3001
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
 POSTGRES_HOST=localhost
